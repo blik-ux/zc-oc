@@ -54,6 +54,7 @@
   --push-bg: #fbfbfb;
   --font: 'Figtree', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --sab: env(safe-area-inset-bottom, 0px);
+  --kb: 0px;
   --sys: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   color-scheme: light;
 }
@@ -333,7 +334,7 @@ img { display: block; }
 
 /* prototype hint above the app-switch bar */
 #nudge {
-  position: absolute; z-index: 21; left: 50%; bottom: calc(30px + var(--sab));
+  position: absolute; z-index: 21; left: 50%; bottom: calc(30px + var(--sab) + var(--kb));
   display: flex; align-items: center; gap: 6px; padding: 7px 12px 7px 10px; border-radius: 16px;
   background: rgba(23, 29, 27, .9); color: #fff; font-family: var(--sys); font-size: 12px; font-weight: 600; white-space: nowrap;
   box-shadow: 0 2px 10px rgba(0, 0, 0, .2);
@@ -353,7 +354,7 @@ img { display: block; }
 
 /* ---------- system: app switcher + handle ---------- */
 #handle {
-  position: absolute; z-index: 20; left: 0; right: 0; bottom: var(--sab); height: 28px;
+  position: absolute; z-index: 20; left: 0; right: 0; bottom: calc(var(--sab) + var(--kb)); height: 28px;
   display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px;
 }
 #handle i { display: block; width: 108px; height: 4px; border-radius: 12px; background: var(--handle); }
@@ -888,7 +889,7 @@ img { display: block; }
   function codeDigits() { return codeInput.value.replace(/\D/g, '').length; }
   function nudgeWanted() {
     if (NO_HINTS || switcher.classList.contains('open')) return false;
-    if (st.app === 'shop') return sheetBack.classList.contains('open') && codeDigits() === 0 && document.activeElement !== codeInput;
+    if (st.app === 'shop') return sheetBack.classList.contains('open') && codeDigits() === 0;
     if (st.app === 'bank' && st.bank === 'home') return st.paid && !st.sawThanks;
     if (st.app === 'bank' && st.bank === 'code') return !awaiting() && st.shop === 'summary' && codeDigits() === 0 && (st.copied || Date.now() - st.codeSince > 4000);
     return false;
@@ -975,7 +976,7 @@ img { display: block; }
     updateNudge();
   }
   codeInput.addEventListener('input', onCode);
-  codeInput.addEventListener('focus', function () { setNudge(false); clearTimeout(nudgeTimer); });
+  codeInput.addEventListener('focus', function () { setTimeout(updateNudge, 50); });
   codeInput.addEventListener('blur', function () { setTimeout(updateNudge, 50); });
   codeInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { codeInput.blur(); } });
   sheetNext.addEventListener('click', function () {
@@ -1096,6 +1097,16 @@ img { display: block; }
   $$('[data-close]').forEach(function (b) {
     b.addEventListener('click', function () { haptic('tick'); setView('bank', 'home'); });
   });
+
+  /* on-screen keyboard: lift the switch bar and hint above it when the keyboard overlays the page */
+  (function () {
+    var vv = window.visualViewport; if (!vv) return;
+    function kb() {
+      var inset = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+      device.style.setProperty('--kb', (inset > 80 ? inset : 0) + 'px');
+    }
+    vv.addEventListener('resize', kb); vv.addEventListener('scroll', kb); kb();
+  })();
 
   /* keep taps on the stage from selecting / zooming */
   document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
