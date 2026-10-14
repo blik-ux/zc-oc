@@ -318,6 +318,7 @@ img { display: block; }
 /* confirm note / trust / done */
 .note { padding: 16px 24px; }
 .note p { font-size: 14px; text-wrap: pretty; }
+.note b { font-weight: 700; }
 .btn-bank-3 { background: #fff; color: #000; border-radius: 24px; }
 .t16 { font-size: 16px; }
 .t16b { font-weight: 600; font-size: 16px; line-height: 1.15; width: 100%; text-wrap: pretty; }
@@ -653,15 +654,18 @@ img { display: block; }
             <div class="who"><b class="h20">Sklep.pl</b><span>Sklep</span></div>
             <b class="h20">199,99 PLN</b>
           </div>
+          <div class="card-plain note" data-variant="a">
+            <p><b>Płać wygodniej w Sklep.pl</b><br>W kolejnym kroku dodaj sklep do zaufanych.</p>
+          </div>
           <div class="card-plain pin-card">
             <label for="pin1">Podaj PIN do aplikacji</label>
             <div class="pin" data-pin><input id="pin1" type="tel" inputmode="numeric" autocomplete="off" maxlength="4" enterkeyhint="done" aria-label="PIN do aplikacji"></div>
           </div>
-          <div class="card-plain note">
+          <div class="card-plain note" data-variant="b" hidden>
             <p>Płać jeszcze wygodniej w tym sklepie.<br>Dodaj go do zaufanych, a wybrane płatności wykonasz bez potwierdzania w aplikacji.</p>
           </div>
           <div class="stack-8">
-            <button class="btn btn-bank" id="payTrust" type="button"><span class="lbl">Potwierdź i dodaj do zaufanych</span><i class="spin"></i></button>
+            <button class="btn btn-bank" id="payTrust" type="button"><span class="lbl"><span data-variant="a">Potwierdź płatność i kontynuuj</span><span data-variant="b" hidden>Potwierdź i dodaj do zaufanych</span></span><i class="spin"></i></button>
             <button class="btn btn-bank" id="payOnly" type="button"><span class="lbl">Potwierdź tylko płatność</span><i class="spin"></i></button>
             <button class="btn btn-bank-3" type="button">Odrzuć</button>
           </div>
@@ -684,8 +688,8 @@ img { display: block; }
               <p class="t16b">Dodaj Sklep.pl do zaufanych</p>
               <div class="terms">
                 <ul data-variant="a">
-                  <li>płać wygodniej: w zaufanym sklepie wybierasz BLIKA bez kodu, a bank weryfikuje i realizuje płatność</li>
-                  <li>jeżeli będzie to wymagane ze względów bezpieczeństwa, poprosimy Cię o potwierdzenie płatności w aplikacji</li>
+                  <li>płać wygodniej: w zaufanym sklepie zapłacisz jednym kliknięciem, bez przechodzenia do aplikacji bankowej</li>
+                  <li>bank dba o bezpieczeństwo i w razie potrzeby poprosi Cię o potwierdzenie</li>
                 </ul>
                 <ul data-variant="b" hidden>
                   <li>płać wygodniej: w zaufanym sklepie zapłacisz jednym kliknięciem, bez przechodzenia do aplikacji bankowej</li>
