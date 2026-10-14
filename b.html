@@ -103,7 +103,7 @@ img { display: block; }
 .scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
 .view { animation: viewin .2s ease both; }
 @keyframes viewin { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-.pad-handle { padding-bottom: calc(24px + var(--sab)); }
+.pad-handle { padding-bottom: calc(80px + var(--sab)); }
 
 /* ---------- shared pieces ---------- */
 .btn {
@@ -185,7 +185,7 @@ img { display: block; }
   position: absolute; left: 0; right: 0; bottom: 0;
   background: var(--surface); border: 1px solid var(--line-strong); border-bottom: 0; border-radius: 4px 4px 0 0;
   box-shadow: 0 -4px 4px rgba(128, 128, 128, .25);
-  padding: 23px 23px calc(28px + var(--sab)); display: flex; flex-direction: column; gap: 8px;
+  padding: 23px 23px calc(80px + var(--sab)); display: flex; flex-direction: column; gap: 8px;
   transform: translateY(100%); transition: transform .28s cubic-bezier(.2, .8, .2, 1);
 }
 .backdrop.open .sheet { transform: none; }
@@ -223,7 +223,7 @@ img { display: block; }
 #bank { background: var(--bank-bg); }
 #bank .view { height: 100%; }
 .bank-view { display: flex; flex-direction: column; height: 100%; }
-.bank-pad { padding: 16px 24px calc(40px + var(--sab)); display: flex; flex-direction: column; align-items: center; gap: 24px; min-height: 100%; }
+.bank-pad { padding: 16px 24px calc(84px + var(--sab)); display: flex; flex-direction: column; align-items: center; gap: 24px; min-height: 100%; }
 .card-bank {
   width: 100%; background: var(--surface); border-radius: 24px; padding: 24px;
   box-shadow: 4px 4px 6px rgba(0, 0, 0, .12);
@@ -265,7 +265,7 @@ img { display: block; }
 .tx .amt b { font-weight: 500; font-size: 16px; }
 .tx .amt span { font-size: 12px; }
 .more { border: 1px solid #000; border-radius: 24px; padding: 12px 24px; font-weight: 700; font-size: 14px; }
-.tabbar { flex: none; background: #fff; box-shadow: 0 -2px 8px rgba(0, 0, 0, .18); padding-bottom: calc(24px + var(--sab)); position: relative; z-index: 1; }
+.tabbar { flex: none; background: #fff; box-shadow: 0 -2px 8px rgba(0, 0, 0, .18); padding-bottom: calc(10px + var(--sab)); position: relative; z-index: 1; }
 .tabs { height: 66px; padding: 12px 48px 8px; display: flex; align-items: center; justify-content: space-between; }
 .tab { width: 50px; display: flex; flex-direction: column; align-items: center; gap: 8px; font-weight: 500; font-size: 12px; white-space: nowrap; }
 
@@ -334,33 +334,43 @@ img { display: block; }
 .nt img { width: 24px; height: 24px; flex: none; }
 .nt p { flex: 1 1 0; min-width: 0; font-size: 14px; }
 
+/* iOS-style return link */
+#backTo { position: absolute; z-index: 19; top: calc(8px + env(safe-area-inset-top, 0px)); left: 12px; display: flex; align-items: center; gap: 4px; padding: 6px 8px; font-family: var(--sys); font-size: 14px; font-weight: 500; color: #0a6cff; }
+#backTo svg { width: 9px; height: 14px; }
+#device.has-back #bank .home-top { padding-top: 40px; }
+#device.has-back #bank .bank-pad { padding-top: 44px; }
+
 /* prototype hint above the app-switch bar */
 #nudge {
-  position: absolute; z-index: 21; left: 50%; bottom: calc(30px + var(--sab) + var(--kb));
+  position: absolute; z-index: 21; right: 12px; bottom: calc(78px + var(--sab) + var(--kb));
   display: flex; align-items: center; gap: 6px; padding: 7px 12px 7px 10px; border-radius: 16px;
   background: rgba(23, 29, 27, .9); color: #fff; font-family: var(--sys); font-size: 12px; font-weight: 600; white-space: nowrap;
   box-shadow: 0 2px 10px rgba(0, 0, 0, .2);
-  transform: translate(-50%, 8px); opacity: 0; visibility: hidden;
+  transform: translateY(8px); opacity: 0; visibility: hidden;
   transition: opacity .25s ease, transform .25s ease, visibility 0s linear .25s;
 }
-#nudge.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition: opacity .25s ease, transform .25s ease, visibility 0s; animation: bob 1.8s ease-in-out .4s infinite; }
+#nudge.show { opacity: 1; visibility: visible; transform: none; transition: opacity .25s ease, transform .25s ease, visibility 0s; animation: bob 1.8s ease-in-out .4s infinite; }
 #nudge svg { width: 12px; height: 12px; flex: none; }
-@keyframes bob { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -4px); } }
-#handle.nudging i { animation: pulse 1.8s ease-in-out infinite; }
+@keyframes bob { 0%, 100% { transform: none; } 50% { transform: translateY(-4px); } }
+#handle.nudging { animation: ring 1.8s ease-in-out infinite; }
+@keyframes ring { 0%, 100% { box-shadow: 0 4px 14px rgba(0,0,0,.28), 0 0 0 0 rgba(26,111,184,.55); } 50% { box-shadow: 0 4px 14px rgba(0,0,0,.28), 0 0 0 9px rgba(26,111,184,0); } }
 @keyframes pulse { 0%, 100% { width: 108px; opacity: 1; } 50% { width: 132px; opacity: .55; } }
-#device.nudge-high #nudge { bottom: calc(100px + var(--sab)); }
-#device.nudge-on .sheet { padding-bottom: calc(64px + var(--sab)); }
+#device.bank-home #nudge { bottom: calc(162px + var(--sab)); }
+#device.nudge-on .sheet { padding-bottom: calc(128px + var(--sab)); }
 .sheet { transition: transform .28s cubic-bezier(.2, .8, .2, 1), padding-bottom .25s ease; }
 .tip { font-size: 13px; line-height: 1.45; color: #6b6f76; text-align: center; }
 .tip b { color: #16171a; font-weight: 600; }
 
 /* ---------- system: app switcher + handle ---------- */
 #handle {
-  position: absolute; z-index: 20; left: 0; right: 0; bottom: calc(var(--sab) + var(--kb)); height: 28px;
-  display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px;
+  position: absolute; z-index: 20; right: 14px; bottom: calc(18px + var(--sab) + var(--kb));
+  width: 50px; height: 50px; border-radius: 25px; display: grid; place-items: center;
+  background: rgba(23, 24, 26, .88); color: #fff; box-shadow: 0 4px 14px rgba(0, 0, 0, .28), 0 0 0 1px rgba(255, 255, 255, .12) inset;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: transform .15s ease, bottom .25s ease;
 }
-#handle i { display: block; width: 108px; height: 4px; border-radius: 12px; background: var(--handle); }
-#handle:active i { opacity: .55; }
+#handle svg { width: 24px; height: 24px; }
+#handle:active { transform: scale(.92); }
+#device.bank-home #handle { bottom: calc(102px + var(--sab)); }
 #switcher {
   position: absolute; inset: 0; z-index: 30; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px;
   background: rgba(22, 23, 26, .78); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
@@ -397,6 +407,9 @@ img { display: block; }
 .intro-list li { display: flex; gap: 14px; align-items: flex-start; font-size: 15px; line-height: 1.4; color: #16171a; }
 .intro-list .mk { flex: none; width: 6px; height: 6px; margin-top: 8px; border-radius: 50%; background: #16171a; }
 .intro-list .tx-i { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+
+.demo-btn { align-self: flex-start; width: 44px; height: 44px; border-radius: 22px; display: grid; place-items: center; background: #17181a; color: #fff; }
+.demo-btn svg { width: 22px; height: 22px; }
 .demo-bar { align-self: flex-start; width: 148px; height: 30px; border: 1.5px solid #c9c7c0; border-top: 0; border-radius: 0 0 16px 16px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 9px; }
 .demo-bar i { display: block; width: 62px; height: 4px; border-radius: 4px; background: #16171a; }
 .intro-list b { font-weight: 600; }
@@ -419,7 +432,7 @@ img { display: block; }
         <p class="lead">Sklep i aplikacja banku są fikcyjne. Działają tylko na potrzeby tego badania, a żadne pieniądze nie zostaną pobrane.</p>
         <ul class="intro-list">
           <li><span class="mk"></span><span class="tx-i"><span><b>Nie podawaj prawdziwych danych.</b> Gdy aplikacja poprosi o PIN, wpisz dowolne 4 cyfry.</span></span></li>
-          <li><span class="mk"></span><span class="tx-i"><span><b>Przełączanie aplikacji.</b> Żeby przejść ze sklepu do aplikacji banku i z powrotem, dotknij paska na samym dole ekranu.</span><span class="demo-bar" aria-hidden="true"><i></i></span></span></li>
+          <li><span class="mk"></span><span class="tx-i"><span><b>Przełączanie aplikacji.</b> Żeby przejść ze sklepu do aplikacji banku i z powrotem, dotknij okrągłego przycisku w prawym dolnym rogu ekranu.</span><span class="demo-btn" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="6.5" width="11" height="14" rx="2.6" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M8.5 4.2h7.2a3 3 0 0 1 3 3v9.4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></span></span></li>
           <li><span class="mk"></span><span class="tx-i"><span><b>Nic nie jest zapisywane.</b> To, co wpiszesz, zostaje na Twoim telefonie i znika po zamknięciu strony.</span></span></li>
         </ul>
         <button id="startBtn" class="btn" type="button">Zaczynam</button>
@@ -784,8 +797,9 @@ img { display: block; }
     </div>
     <button class="reset" id="resetBtn" type="button">Resetuj prototyp</button>
   </div>
-  <button id="nudge" type="button" aria-hidden="true" tabindex="-1"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 7.5 6 4l3.5 3.5" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Przełącz aplikację</button>
-  <button id="handle" type="button" aria-label="Przełącz aplikację" hidden><i></i></button>
+  <button id="backTo" type="button" hidden><svg viewBox="0 0 10 16" aria-hidden="true"><path d="M8 2 2 8l6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>sklep.pl</button>
+  <button id="nudge" type="button" aria-hidden="true" tabindex="-1"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5l3-3" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Przełącz aplikację</button>
+  <button id="handle" type="button" aria-label="Przełącz aplikację" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="6.5" width="11" height="14" rx="2.6" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M8.5 4.2h7.2a3 3 0 0 1 3 3v9.4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></button>
 
 </div>
 </div>
@@ -926,13 +940,17 @@ img { display: block; }
     if (st.app === 'bank' && st.bank === 'code') return !awaiting() && st.shop === 'summary' && codeDigits() === 0 && (st.copied || Date.now() - st.codeSince > 4000);
     return false;
   }
+  var backTo = $('#backTo');
+  backTo.addEventListener('click', function () { haptic('tick'); openShop(); });
   function setNudge(on) {
     nudge.classList.toggle('show', on);
     handle.classList.toggle('nudging', on);
     device.classList.toggle('nudge-on', on && st.app === 'shop');
-    device.classList.toggle('nudge-high', on && st.app === 'bank' && st.bank === 'home');
   }
   function updateNudge() {
+    var back = st.app === 'bank' && (st.paid || st.rejected) && !st.sawThanks && ['home', 'doneTrusted', 'doneNotTrusted', 'doneOnly', 'rejected'].indexOf(st.bank) > -1;
+    backTo.hidden = !back; device.classList.toggle('has-back', back);
+    device.classList.toggle('bank-home', st.app === 'bank' && st.bank === 'home');
     clearTimeout(nudgeTimer);
     if (!nudgeWanted()) { setNudge(false); return; }
     if (nudge.classList.contains('show')) return;
