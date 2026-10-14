@@ -778,7 +778,7 @@ img { display: block; }
   var NO_HINTS = /bez-wskazowek/.test(location.hash);
   /* text variant of the "add to trusted" screen: link ending #wariant-a (default) or #wariant-b */
   function applyVariant() {
-    var v = /wariant-b/.test(location.hash) ? 'b' : 'a';
+    var v = /wariant-b/.test(location.hash) ? 'b' : /wariant-a/.test(location.hash) ? 'a' : (window.ZC_VARIANT || 'a');
     Array.prototype.slice.call(document.querySelectorAll('[data-variant]')).forEach(function (el) { el.hidden = el.getAttribute('data-variant') !== v; });
     document.getElementById('variantMark').textContent = v.toUpperCase();
   }

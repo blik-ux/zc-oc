@@ -2,7 +2,7 @@
   "name": "Prototyp – zakupy",
   "short_name": "Prototyp",
   "lang": "pl",
-  "start_url": "./",
+  "start_url": "index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
