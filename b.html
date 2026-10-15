@@ -350,7 +350,9 @@ img { display: block; }
   overflow: hidden;
 }
 .drawer.open { transform: none; }
-.drawer .grab { position: absolute; top: 8px; left: 50%; width: 36px; height: 4px; margin-left: -18px; border-radius: 2px; background: rgba(0, 0, 0, .14); }
+.drawer .grab { position: absolute; top: 8px; left: 50%; width: 40px; height: 5px; margin-left: -20px; border-radius: 3px; background: rgba(0, 0, 0, .18); }
+.drawer { touch-action: none; }
+.drawer.dragging { transition: none; }
 .dstep { display: flex; flex-direction: column; gap: 24px; animation: viewin .25s ease both; }
 .dstep[hidden] { display: none; }
 .dstep .terms { gap: 16px; }
@@ -1265,7 +1267,7 @@ img { display: block; }
   $('#payTrust').addEventListener('click', function () {
     if (needPin('pin1')) return;
     haptic('tick');
-    busy(this, 900, function () { markPaid(); haptic('success'); if (VARIANT === 'c') { st.drawerC = true; setView('bank', 'paidC'); setTimeout(function () { if (st.bank === 'paidC') drawer(true); }, 650); } else setView('bank', VARIANT === 'b' ? 'offerB' : 'trust'); });
+    busy(this, 900, function () { markPaid(); haptic('success'); if (VARIANT === 'c') { st.drawerC = true; setView('bank', 'paidC'); setTimeout(function () { if (st.bank === 'paidC') drawer(true); }, 1600); } else setView('bank', VARIANT === 'b' ? 'offerB' : 'trust'); });
   });
   $('#payOnly').addEventListener('click', function () {
     if (needPin('pin1')) return;
@@ -1311,6 +1313,35 @@ img { display: block; }
   function offerAgain() { var b = $('#cardSecondC'); b.textContent = 'Dodaj do zaufanych'; b.dataset.reopen = '1'; }
   $('#cardSecondC').addEventListener('click', function () { if (this.dataset.reopen) drawer(true); });
   $('#drawerNo').addEventListener('click', function () { haptic('tick'); drawer(false); offerAgain(); });
+
+  /* swipe the drawer down to dismiss (same as "Nie teraz" / "Anuluj") */
+  (function () {
+    var y0 = 0, t0 = 0, dy = 0, id = null, dragging = false, suppress = false;
+    function dismiss() { var pin = $('#pin4'); pin.value = ''; pin.dispatchEvent(new Event('input')); haptic('tick'); drawer(false); offerAgain(); }
+    drawerC.addEventListener('pointerdown', function (e) {
+      if (!drawerC.classList.contains('open') || e.target.closest('input')) return;
+      id = e.pointerId; y0 = e.clientY; t0 = Date.now(); dy = 0; dragging = false;
+    });
+    drawerC.addEventListener('pointermove', function (e) {
+      if (e.pointerId !== id) return;
+      var d = e.clientY - y0;
+      if (!dragging) { if (Math.abs(d) < 8) return; dragging = true; drawerC.classList.add('dragging'); try { drawerC.setPointerCapture(id); } catch (err) {} document.activeElement && document.activeElement.blur && document.activeElement.blur(); }
+      dy = d > 0 ? d : d * 0.2;
+      drawerC.style.transform = 'translateY(' + dy + 'px)';
+    });
+    function end(e) {
+      if (e.pointerId !== id) return; id = null;
+      if (!dragging) return;
+      dragging = false; suppress = true; setTimeout(function () { suppress = false; }, 50);
+      drawerC.classList.remove('dragging');
+      var v = dy / Math.max(1, Date.now() - t0);
+      drawerC.style.transform = '';
+      if (dy > drawerC.offsetHeight * 0.3 || (dy > 40 && v > 0.5)) dismiss();
+    }
+    drawerC.addEventListener('pointerup', end);
+    drawerC.addEventListener('pointercancel', end);
+    drawerC.addEventListener('click', function (e) { if (suppress) { e.stopPropagation(); e.preventDefault(); } }, true);
+  })();
   $('#drawerCancel').addEventListener('click', function () { haptic('tick'); var pin = $('#pin4'); pin.value = ''; pin.dispatchEvent(new Event('input')); drawer(false); offerAgain(); });
   $('#drawerConfirm').addEventListener('click', function () {
     if (needPin('pin4')) return;
