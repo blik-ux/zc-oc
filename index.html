@@ -1149,7 +1149,6 @@ img { display: block; }
   function pickPay(btn) {
     if (!btn.classList.contains('sel')) haptic('select');
     [payBlik, payOC].forEach(function (b) { b.classList.toggle('sel', b === btn); b.setAttribute('aria-checked', b === btn ? 'true' : 'false'); });
-    shopNext.textContent = btn === payOC ? 'Kupuję i płacę' : 'Dalej';
     shopNext.disabled = false;
   }
   /* variant D: "BLIK bez kodu" (OneClick) skips the code; the bank asks for confirmation straight away */
