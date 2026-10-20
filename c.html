@@ -193,6 +193,10 @@ img { display: block; }
 .sheet-head span { flex: 1; }
 .sheet-x { font-weight: 600; font-size: 20px; padding: 8px; margin: -8px; }
 .sheet-body { padding: 16px 0; }
+.oc-body { display: flex; flex-direction: column; gap: 20px; padding: 4px 0 16px; }
+.oc-body[hidden] { display: none; }
+.oc-lbl, .oc-app { font-weight: 600; font-size: 16px; line-height: 1.15; }
+.oc-why { font-size: 12px; color: var(--text-2); text-decoration: underline; text-underline-offset: 2px; align-self: flex-start; }
 .field-row { display: flex; flex-direction: column; gap: 16px; padding: 16px 0 8px; }
 .field-row label { font-weight: 600; font-size: 16px; line-height: 1.15; }
 #blikCode {
@@ -583,14 +587,20 @@ img { display: block; }
     <!-- BLIK code sheet -->
     <div class="backdrop" id="sheetBack">
       <div class="sheet" role="dialog" aria-label="Płatność BLIK">
-        <div class="sheet-head"><span>Płatność BLIK</span><button class="sheet-x" id="sheetClose" type="button" aria-label="Zamknij">X</button></div>
-        <div class="sheet-body">
+        <div class="sheet-head"><span data-variant="a b c">Płatność BLIK</span><span data-variant="d" hidden>Płatność BLIK bez kodu</span><button class="sheet-x" id="sheetClose" type="button" aria-label="Zamknij">X</button></div>
+        <div class="sheet-body oc-body" data-variant="d" hidden>
+          <p class="oc-lbl">w aplikacji:</p>
+          <p class="oc-app">Bank DEMO</p>
+          <a class="oc-why" href="#" id="ocWhy">Dlaczego nie muszę wpisywać kodu?</a>
+        </div>
+        <div class="sheet-body" data-variant="a b c">
           <div class="field-row">
             <label for="blikCode">Wpisz kod BLIK z aplikacji swojego banku</label>
             <input id="blikCode" type="text" inputmode="numeric" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="7" enterkeyhint="done" aria-label="Kod BLIK">
           </div>
         </div>
-        <button class="btn btn-shop" id="sheetNext" type="button" disabled>Dalej</button>
+        <button class="btn btn-shop" id="sheetNext" type="button" disabled data-variant="a b c">Dalej</button>
+        <button class="btn btn-shop" id="sheetPay" type="button" data-variant="d" hidden>Kupuję i płacę</button>
       </div>
     </div>
 
@@ -703,7 +713,7 @@ img { display: block; }
             <div class="who"><b class="h20">Sklep.pl</b><span>Sklep</span></div>
             <b class="h20">199,99 PLN</b>
           </div>
-          <div class="card-plain note" data-variant="a">
+          <div class="card-plain note" data-variant="a d">
             <p><b>Płać wygodniej w Sklep.pl</b><br>W kolejnym kroku dodaj sklep do zaufanych.</p>
           </div>
           <div class="card-plain pin-card">
@@ -711,8 +721,8 @@ img { display: block; }
             <div class="pin" data-pin><input id="pin1" type="tel" inputmode="numeric" autocomplete="off" maxlength="4" enterkeyhint="done" aria-label="PIN do aplikacji"></div>
           </div>
           <div class="stack-8">
-            <button class="btn btn-bank" id="payTrust" type="button"><span class="lbl"><span data-variant="a">Potwierdź płatność i kontynuuj</span><span data-variant="b c" hidden>Potwierdź płatność</span></span><i class="spin"></i></button>
-            <button class="btn btn-bank" id="payOnly" type="button" data-variant="a"><span class="lbl">Potwierdź tylko płatność</span><i class="spin"></i></button>
+            <button class="btn btn-bank" id="payTrust" type="button"><span class="lbl"><span data-variant="a d">Potwierdź płatność i kontynuuj</span><span data-variant="b c" hidden>Potwierdź płatność</span></span><i class="spin"></i></button>
+            <button class="btn btn-bank" id="payOnly" type="button" data-variant="a d"><span class="lbl">Potwierdź tylko płatność</span><i class="spin"></i></button>
             <button class="btn btn-bank-3" id="rejectPay" type="button">Odrzuć</button>
           </div>
         </div>
@@ -733,7 +743,7 @@ img { display: block; }
               <div class="hr"></div>
               <p class="t16b">Dodaj Sklep.pl do zaufanych</p>
               <div class="terms">
-                <ul data-variant="a">
+                <ul data-variant="a d">
                   <li>płać wygodniej: w zaufanym sklepie zapłacisz jednym kliknięciem, bez przechodzenia do aplikacji bankowej</li>
                   <li>bank dba o bezpieczeństwo i w razie potrzeby poprosi Cię o potwierdzenie</li>
                 </ul>
@@ -953,11 +963,11 @@ img { display: block; }
   /* text variant of the "add to trusted" screen: link ending #wariant-a (default) or #wariant-b */
   var VARIANT = 'a';
   function applyVariant() {
-    var v = /wariant-c/.test(location.hash) ? 'c' : /wariant-b/.test(location.hash) ? 'b' : /wariant-a/.test(location.hash) ? 'a' : (window.ZC_VARIANT || 'a');
+    var v = /wariant-d/.test(location.hash) ? 'd' : /wariant-c/.test(location.hash) ? 'c' : /wariant-b/.test(location.hash) ? 'b' : /wariant-a/.test(location.hash) ? 'a' : (window.ZC_VARIANT || 'a');
     Array.prototype.slice.call(document.querySelectorAll('[data-variant]')).forEach(function (el) { el.hidden = el.getAttribute('data-variant').split(' ').indexOf(v) < 0; });
     document.getElementById('variantMark').textContent = v.toUpperCase();
     VARIANT = v;
-    var rj = document.getElementById('rejectPay'); rj.classList.toggle('btn-bank-2', v !== 'a'); rj.classList.toggle('btn-bank-3', v === 'a');
+    var rj = document.getElementById('rejectPay'); var plain = v === 'a' || v === 'd'; rj.classList.toggle('btn-bank-2', !plain); rj.classList.toggle('btn-bank-3', plain);
   }
   applyVariant();
   window.addEventListener('hashchange', applyVariant);
@@ -1075,7 +1085,7 @@ img { display: block; }
   function codeDigits() { return codeInput.value.replace(/\D/g, '').length; }
   function nudgeWanted() {
     if (NO_HINTS || switcher.classList.contains('open')) return false;
-    if (st.app === 'shop') return sheetBack.classList.contains('open') && codeDigits() === 0;
+    if (st.app === 'shop') return VARIANT !== 'd' && sheetBack.classList.contains('open') && codeDigits() === 0;
     if (st.app === 'bank' && st.bank === 'home') return (st.paid || st.rejected) && !st.sawThanks;
     if (st.app === 'bank' && st.bank === 'code') return !awaiting() && st.shop === 'summary' && codeDigits() === 0 && (st.copied || Date.now() - st.codeSince > 4000);
     return false;
@@ -1168,6 +1178,15 @@ img { display: block; }
   codeInput.addEventListener('focus', function () { setTimeout(updateNudge, 50); });
   codeInput.addEventListener('blur', function () { setTimeout(updateNudge, 50); });
   codeInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { codeInput.blur(); } });
+  /* variant D (OneClick): no BLIK code, the bank asks for confirmation straight away */
+  $('#ocWhy').addEventListener('click', function (e) { e.preventDefault(); });
+  $('#sheetPay').addEventListener('click', function () {
+    haptic('tick');
+    closeSheet();
+    st.rejected = false; st.sawThanks = false;
+    setView('shop', 'waiting');
+    schedulePush(1500);
+  });
   sheetNext.addEventListener('click', function () {
     if (sheetNext.disabled) return;
     haptic('tick');
