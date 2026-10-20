@@ -322,6 +322,8 @@ img { display: block; }
 .note { padding: 16px 24px; }
 .note p { font-size: 14px; text-wrap: pretty; }
 .note b { font-weight: 700; }
+.note-b1 ul { padding-left: 16px; font-size: 14px; }
+.note-b1 li { text-wrap: pretty; }
 .btn-bank-3 { background: #fff; color: #000; border-radius: 24px; }
 .t16 { font-size: 16px; }
 .t16b { font-weight: 600; font-size: 16px; line-height: 1.15; width: 100%; text-wrap: pretty; }
@@ -710,6 +712,13 @@ img { display: block; }
             <div class="who"><b class="h20">Sklep.pl</b><span>Sklep</span></div>
             <b class="h20">199,99 PLN</b>
           </div>
+          <div class="card-plain note note-b1" data-variant="b1" hidden>
+            <p><b>Dodaj sklep do zaufanych</b></p>
+            <ul>
+              <li>Płać jednym kliknięciem, bez przechodzenia do aplikacji banku.</li>
+              <li>W razie potrzeby bank poprosi Cię o potwierdzenie.</li>
+            </ul>
+          </div>
           <div class="card-plain note" data-variant="a d">
             <p><b>Płać wygodniej w Sklep.pl</b><br>W kolejnym kroku dodaj sklep do zaufanych.</p>
           </div>
@@ -718,8 +727,8 @@ img { display: block; }
             <div class="pin" data-pin><input id="pin1" type="tel" inputmode="numeric" autocomplete="off" maxlength="4" enterkeyhint="done" aria-label="PIN do aplikacji"></div>
           </div>
           <div class="stack-8">
-            <button class="btn btn-bank" id="payTrust" type="button"><span class="lbl"><span data-variant="a d">Potwierdź płatność i kontynuuj</span><span data-variant="b c" hidden>Potwierdź płatność</span></span><i class="spin"></i></button>
-            <button class="btn btn-bank" id="payOnly" type="button" data-variant="a d"><span class="lbl">Potwierdź tylko płatność</span><i class="spin"></i></button>
+            <button class="btn btn-bank" id="payTrust" type="button"><span class="lbl"><span data-variant="a d">Potwierdź płatność i kontynuuj</span><span data-variant="b c" hidden>Potwierdź płatność</span><span data-variant="b1" hidden>Dodaj do zaufanych i potwierdź płatność</span></span><i class="spin"></i></button>
+            <button class="btn btn-bank" id="payOnly" type="button" data-variant="a d b1"><span class="lbl">Potwierdź tylko płatność</span><i class="spin"></i></button>
             <button class="btn btn-bank-3" id="rejectPay" type="button">Odrzuć</button>
           </div>
         </div>
@@ -960,11 +969,11 @@ img { display: block; }
   /* text variant of the "add to trusted" screen: link ending #wariant-a (default) or #wariant-b */
   var VARIANT = 'a';
   function applyVariant() {
-    var v = /wariant-d/.test(location.hash) ? 'd' : /wariant-c/.test(location.hash) ? 'c' : /wariant-b/.test(location.hash) ? 'b' : /wariant-a/.test(location.hash) ? 'a' : (window.ZC_VARIANT || 'a');
+    var v = /wariant-b1/.test(location.hash) ? 'b1' : /wariant-d/.test(location.hash) ? 'd' : /wariant-c/.test(location.hash) ? 'c' : /wariant-b/.test(location.hash) ? 'b' : /wariant-a/.test(location.hash) ? 'a' : (window.ZC_VARIANT || 'a');
     Array.prototype.slice.call(document.querySelectorAll('[data-variant]')).forEach(function (el) { el.hidden = el.getAttribute('data-variant').split(' ').indexOf(v) < 0; });
     document.getElementById('variantMark').textContent = v.toUpperCase();
     VARIANT = v; document.getElementById('device').classList.toggle('v-d', v === 'd');
-    var rj = document.getElementById('rejectPay'); var plain = v === 'a' || v === 'd'; rj.classList.toggle('btn-bank-2', !plain); rj.classList.toggle('btn-bank-3', plain);
+    var rj = document.getElementById('rejectPay'); var plain = v === 'a' || v === 'd' || v === 'b1'; rj.classList.toggle('btn-bank-2', !plain); rj.classList.toggle('btn-bank-3', plain);
   }
   applyVariant();
   window.addEventListener('hashchange', applyVariant);
@@ -1287,7 +1296,7 @@ img { display: block; }
   $('#payTrust').addEventListener('click', function () {
     if (needPin('pin1')) return;
     haptic('tick');
-    busy(this, 900, function () { markPaid(); haptic('success'); if (VARIANT === 'c') { st.drawerC = true; setView('bank', 'paidC'); setTimeout(function () { if (st.bank === 'paidC') drawer(true); }, 1600); } else setView('bank', VARIANT === 'b' ? 'offerB' : 'trust'); });
+    busy(this, 900, function () { markPaid(); haptic('success'); if (VARIANT === 'c') { st.drawerC = true; setView('bank', 'paidC'); setTimeout(function () { if (st.bank === 'paidC') drawer(true); }, 1600); } else setView('bank', VARIANT === 'b' ? 'offerB' : VARIANT === 'b1' ? 'doneTrusted' : 'trust'); });
   });
   $('#payOnly').addEventListener('click', function () {
     if (needPin('pin1')) return;
