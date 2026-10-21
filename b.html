@@ -1167,19 +1167,21 @@ img { display: block; }
   var payOC = $('#payOC');
   function pickPay(btn) {
     if (!btn.classList.contains('sel')) haptic('select');
-    [payBlik, payOC].forEach(function (b) { b.classList.toggle('sel', b === btn); b.setAttribute('aria-checked', b === btn ? 'true' : 'false'); });
+    $$('.pay-list .pay').forEach(function (b) { b.classList.toggle('sel', b === btn); if (b.hasAttribute('aria-checked')) b.setAttribute('aria-checked', b === btn ? 'true' : 'false'); });
     shopNext.textContent = (btn === payOC && VARIANT === 'k1') ? 'Kupuję i płacę' : 'Dalej';
     shopNext.disabled = false;
   }
   /* variant D: "BLIK bez kodu" (OneClick) skips the code; the bank asks for confirmation straight away */
   payOC.addEventListener('click', function () { pickPay(payOC); });
+  /* K1: every payment method can be picked, but only "BLIK bez kodu" goes on — the other paths are not prototyped */
+  $$('.pay-list div.pay').forEach(function (d) { d.addEventListener('click', function () { if (VARIANT === 'k1') pickPay(d); }); });
   payBlik.addEventListener('click', function () {
-    if (VARIANT === 'k1') return; /* K1: the code path (regular payment, no activation) is not prototyped */
     pickPay(payBlik);
     shopNext.disabled = false;
   });
   shopNext.addEventListener('click', function () {
     if (shopNext.disabled) return;
+    if (VARIANT === 'k1' && !payOC.classList.contains('sel')) return;
     if (!payOC.classList.contains('sel')) { openSheet(); return; }
     haptic('tick');
     if (VARIANT === 'k1') {
