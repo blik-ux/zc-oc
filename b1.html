@@ -1174,6 +1174,7 @@ img { display: block; }
   /* variant D: "BLIK bez kodu" (OneClick) skips the code; the bank asks for confirmation straight away */
   payOC.addEventListener('click', function () { pickPay(payOC); });
   payBlik.addEventListener('click', function () {
+    if (VARIANT === 'k1') return; /* K1: the code path (regular payment, no activation) is not prototyped */
     pickPay(payBlik);
     shopNext.disabled = false;
   });
