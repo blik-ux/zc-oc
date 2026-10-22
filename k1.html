@@ -761,7 +761,7 @@ img { display: block; }
             <label for="pin1">Podaj PIN do aplikacji</label>
             <div class="pin" data-pin><input id="pin1" type="tel" inputmode="numeric" autocomplete="off" maxlength="4" enterkeyhint="done" aria-label="PIN do aplikacji"></div>
           </div>
-          <p class="sca-timer" id="scaTimer" role="timer" aria-live="polite" data-variant="b1" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 5.8V9l2 1.4M6.3 1.8h3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>Na potwierdzenie zostało <b id="scaLeft">10</b>&nbsp;s</span></p>
+          <p class="sca-timer" id="scaTimer" role="timer" aria-live="polite" data-variant="a b1" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 5.8V9l2 1.4M6.3 1.8h3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>Na potwierdzenie zostało <b id="scaLeft">10</b>&nbsp;s</span></p>
           <div class="stack-8">
             <button class="btn btn-bank" id="payTrust" type="button"><span class="lbl"><span data-variant="a d k1 k2">Potwierdź płatność i kontynuuj</span><span data-variant="b c" hidden>Potwierdź płatność</span><span data-variant="b1" hidden>Dodaj do zaufanych i potwierdź płatność</span></span><i class="spin"></i></button>
             <button class="btn btn-bank" id="payOnly" type="button" data-variant="a d b1 k1 k2"><span class="lbl">Potwierdź tylko płatność</span><i class="spin"></i></button>
@@ -1031,7 +1031,7 @@ img { display: block; }
     VARIANT = v; document.getElementById('device').classList.toggle('v-d', v === 'd' || v === 'k1' || v === 'k2');
     if (v === 'k1') k1Order();
     if (v === 'k2') k2Order();
-    if (v === 'b1') b1Shop();
+    if (v === 'b1' || v === 'a') b1Shop();
     var rj = document.getElementById('rejectPay'); var plain = v === 'a' || v === 'd' || v === 'b1' || v === 'k1' || v === 'k2'; rj.classList.toggle('btn-bank-2', !plain); rj.classList.toggle('btn-bank-3', plain);
   }
   applyVariant();
@@ -1414,7 +1414,7 @@ img { display: block; }
      at 0 the payment is rejected, as by the bank. */
   var SCA_MS = 30000, SCA_SHOW = 10, sca = { t: null, end: 0 };
   function startSca() {
-    if (VARIANT !== 'b1' || sca.t || st.paid) return;
+    if ((VARIANT !== 'b1' && VARIANT !== 'a') || sca.t || st.paid) return;
     sca.end = Date.now() + SCA_MS;
     sca.t = setInterval(scaTick, 200); scaTick();
   }
