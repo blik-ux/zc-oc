@@ -1405,7 +1405,7 @@ img { display: block; }
       if (o.classList.contains('sel')) return;
       $$('.m-dopt').forEach(function (x) { x.classList.toggle('sel', x === o); }); haptic('select'); paintDelivery();
     }); });
-    $('#summaryBack').addEventListener('click', function () { haptic('tick'); mBack(); });
+    $('#summaryBack').addEventListener('click', function () { if (!mHist.length) return; haptic('tick'); mBack(); });
   }
 
   var k2Done = false;
@@ -1594,6 +1594,9 @@ img { display: block; }
     try { if (document.fullscreenEnabled && el.requestFullscreen) el.requestFullscreen({ navigationUI: 'hide' }).catch(function () {}); } catch (e) {}
   }
   initShopFlow();
+  /* ?od=platnosci (or #od-platnosci): skip the merchant pre-flow, start on the order summary as before */
+  var SKIP_SHOP = /[?&]od=platnosci\b/.test(location.search) || /od-platnosci/.test(location.hash);
+  if (SKIP_SHOP) setView('shop', 'summary');
   /* focusing an input (shop search) can make the browser scroll overflow:hidden containers; keep the stage pinned */
   [device, apps.shop, apps.bank, apps.intro].forEach(function (el) { el.addEventListener('scroll', function () { if (el.scrollTop || el.scrollLeft) { el.scrollTop = 0; el.scrollLeft = 0; } }); });
   $('#startBtn').addEventListener('click', function () {
