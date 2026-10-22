@@ -251,6 +251,20 @@ img { display: block; }
 .m-avail span { font-weight: 400; font-size: 12px; color: #808080; }
 .m-between { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .m-link { font-size: 12px; color: #808080; text-decoration: underline; text-underline-offset: 2px; }
+.m-select { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 48px; padding: 0 12px 0 16px; border: 1px solid #bababa; border-radius: 4px; background: #fff; font-weight: 600; font-size: 16px; text-align: left; }
+.m-select.empty span { color: #808080; font-weight: 600; font-size: 14px; }
+.m-select svg { width: 20px; height: 20px; }
+.m-select.shake { animation: mshake .35s ease; border-color: #c4320a; }
+.m-sizesheet { gap: 4px; max-height: 82%; padding-bottom: calc(16px + var(--sab)); }
+#device.picking #handle, #device.picking #nudge { opacity: 0; pointer-events: none; }
+.m-sizelist { overflow-y: auto; margin: 8px -23px 0; padding: 0 23px; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+.m-sizeopt { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 52px; border-bottom: 1px solid #e3e3e3; text-align: left; }
+.m-sizeopt:last-child { border-bottom: 0; }
+.m-sizeopt b { font-weight: 600; font-size: 16px; }
+.m-sizeopt span { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #808080; }
+.m-sizeopt svg { width: 20px; height: 20px; visibility: hidden; }
+.m-sizeopt.sel b { font-weight: 700; }
+.m-sizeopt.sel svg { visibility: visible; }
 .m-sizes { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
 .m-sizes.few { grid-template-columns: repeat(3, 1fr); }
 .m-sizes.shake { animation: mshake .35s ease; }
@@ -676,7 +690,7 @@ img { display: block; }
             <h1 id="mPName"></h1><span class="rate" id="mPRate"></span><span class="big" id="mPPrice"></span>
             <div class="m-avail"><i data-ico="check"></i>Dostępne <span>· wysyłka w 24 h</span></div>
             <div class="m-between"><b class="t14">Rozmiar</b><span class="m-link">Tabela rozmiarów</span></div>
-            <div class="m-sizes" id="mSizes"></div><p class="m-err" id="mSizeErr" hidden>Wybierz rozmiar</p>
+            <button type="button" class="m-select" id="mSizeBtn"><span id="mSizeVal">Wybierz rozmiar</span><i data-ico="down"></i></button>
             <div class="m-hr"></div>
             <div class="m-ship"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAOdEVYdFNvZnR3YXJlAEZpZ21hnrGWYwAAA4BJREFUeAHtnP110zAUxS8c/qdMEDEBMEHNBIUJXCboCMkGLRNkhLJBwgRtJrCZgG5Q9I7i05I6sr4iRc39nfNOm9hWJF19PD1bBgghhBBCCCGEEEIIIYQQQshBeeNx7pm2Vpva/l8TD9p6bb+0/UFlSGUvtT2+ErvVNkMlKJiWU0vlulqn7RMq4B51VayvCEc9lLaoq0JDbIEjZoW6KjO0FxTF5gX9RX3eTggfYLykIry1HDuFyhfeoyDvEM4P1ME1Km1MU+NnLcg4byvHDAV5C1IUClAYClCYmEn4taDgR7Zg3qlMwiGLtyyeFQWYFmKGA0IBpu0OkXASjuMzzHB0ENgD3G2BA0AB/OwCiaEAfibR4xk84TrA3HJ1QU0cF7d0ra1BorXCqfSAxjGda2TyjAYowEvu4CZCEs+IArxEwf0pkQUioQDjKJgJ10WEKM+IAuznAgf0jAYogJ053ESQ3w8K3FGAaVw9owUCoABuuHhGe11TBuPi+Y7phdfeIYgCxNNr+4ZAKEAagp+sowCFoQCFoQCFoQCFoQCFoQCFoQCFSX1L8hxmUSKPa6jtd8/36K5x/Pt0ZdUq0c4GphzDKraH2bQo5fiNDPjEgmTL58rhmiEwlXPDhE8s6ApusX5Js312nXI43xtXAa4czh3L0Ax5cBFAIWxT4mL7GwqFBJg7nFdahG4iHy3iNqMvESFAzBwgLX+BcBTMnCBzRrFdipobxA2Jl/B758Z/2C58BElFr+3j2AGbG1qyVZ4MNgHuQQ6OTYA1wtlo+wrT7S5Rb2/6CVOGLzD+f1ZkYuqRxruZB6RT2pZ4ySowrQ6ByALL9SGkwW5H0jmDf6ZLWzNSjnlgWh32MBUL2sD/ad8xl06hPsbeIZF8Be/jv7YwPruCiZHYkOObZ5+XMHPBPh6Qf544g71C1zDz2IDafjezXLOvHP1OWlG4DCcybEmli2grh/OXyI9LCKXbnjeH21Cc7TVoLpXqY8m39zigkLYMHTJyjkozvsMK6cpxhcykynyLcpwjXSPK/k4iBX8XddduUJ454gVoUIiQdcJgEuo4ljdZxYjQojAK/ivmY2j5u/iK0KFgyx9DWkIPe6ZXOLJM76Aw/Zpm6fEiVpLeG3wjwUIDMzQpPMWTZCUtwaxagnKS7wZP5RBkyNxs/zJUTwghhBBCCCGEEEIIIYQQUgv/AK85Gwbdvwm6AAAAAElFTkSuQmCC" alt=""><span>Dostawa do punktu odbioru 0,00 PLN · 30 dni na zwrot</span></div>
           </div>
@@ -834,6 +848,14 @@ img { display: block; }
           </div>
         </div>
         <button class="btn btn-shop" id="sheetNext" type="button" disabled>Dalej</button>
+      </div>
+    </div>
+
+    <!-- product: size picker -->
+    <div class="backdrop" id="sizeBack">
+      <div class="sheet m-sizesheet" role="dialog" aria-label="Wybierz rozmiar">
+        <div class="sheet-head"><span>Wybierz rozmiar</span><button class="sheet-x" id="sizeClose" type="button" aria-label="Zamknij">X</button></div>
+        <div class="m-sizelist" id="mSizeList" role="listbox" aria-label="Rozmiar"></div>
       </div>
     </div>
 
@@ -1297,8 +1319,7 @@ img { display: block; }
     $('#mGrid').innerHTML = MG.grid.map(function (it) { return tile(it, 'm-card'); }).join('');
     var P = MG.product;
     $('#mPImg').src = IMG[P.img]; $('#mPName').textContent = P.name; $('#mPRate').textContent = P.rate; $('#mPPrice').textContent = P.price + ' PLN';
-    $('#mSizes').classList.toggle('few', P.sizes.length < 6);
-    $('#mSizes').innerHTML = P.sizes.map(function (s) { return '<button type="button" class="m-size' + (s === P.size ? ' sel' : '') + '">' + s + '</button>'; }).join('');
+    $('#mSizeList').innerHTML = P.sizes.map(function (s) { return '<button type="button" class="m-sizeopt" role="option" data-size="' + s + '"><b>' + s + '</b><span>Dostępny<i data-ico="check"></i></span></button>'; }).join('');
     $('#mPDesc').textContent = P.desc;
     $('#mPParams').innerHTML = P.params.map(function (r) { return '<div class="r"><span>' + r[0] + '</span><b>' + esc(r[1]) + '</b></div>'; }).join('');
     $('#mSim').innerHTML = P.sim.map(function (it) { return tile(it, 'm-tile'); }).join('');
@@ -1309,7 +1330,11 @@ img { display: block; }
     $$('[data-ico]').forEach(function (e) { if (!e.firstChild || e.tagName === 'I') { var k = e.getAttribute('data-ico'); e.innerHTML = ICO[k]; } });
     $$('#shop .m-search i, #shop .m-sugg i, #shop .m-chip i, #shop .m-avail i, #shop .m-why i, #shop .m-dopt i, #shop .m-acc i').forEach(function (e) { e.style.display = 'contents'; });
   }
+  function openSizes() { paintSize(); $('#sizeBack').classList.add('open'); device.classList.add('picking'); }
+  function closeSizes() { $('#sizeBack').classList.remove('open'); device.classList.remove('picking'); }
   function paintSize() {
+    var b = $('#mSizeBtn'); b.classList.toggle('empty', !mSize); $('#mSizeVal').textContent = mSize || 'Wybierz rozmiar';
+    $$('.m-sizeopt').forEach(function (o) { o.classList.toggle('sel', o.getAttribute('data-size') === mSize); o.setAttribute('aria-selected', o.getAttribute('data-size') === mSize ? 'true' : 'false'); });
     if (!mSize) return;
     $('#mCSize').textContent = 'Rozmiar: ' + mSize;
     if (MG === GROUPS.shoes) $$('#shop .t12').forEach(function (e) { if (/^Rozmiar: /.test(e.textContent)) e.textContent = 'Rozmiar: ' + mSize; });
@@ -1348,7 +1373,7 @@ img { display: block; }
       if (t.hasAttribute('data-go-results')) { haptic('tick'); $('#mQ').blur(); mGo('results'); return; }
       if (t.hasAttribute('data-back')) { haptic('tick'); mBack(); return; }
       if (t.classList.contains('m-cart') && mInCart && st.shop !== 'cart') { haptic('tick'); mGo('cart'); return; }
-      if (t.classList.contains('m-size')) { $$('.m-size').forEach(function (b) { b.classList.toggle('sel', b === t); }); mSize = t.textContent; $('#mSizeErr').hidden = true; haptic('select'); paintSize(); return; }
+      if (t.classList.contains('m-sizeopt')) { mSize = t.getAttribute('data-size'); haptic('select'); paintSize(); setTimeout(closeSizes, 180); return; }
     });
     $('#mSearchBtn').addEventListener('click', function () {
       haptic('tick'); mGo('search');
@@ -1357,14 +1382,12 @@ img { display: block; }
     $('#mResQ').addEventListener('click', function () { haptic('tick'); mBack(); var q = $('#mQ'); q.value = MG.q; q.focus(); });
     $('#mQx').addEventListener('click', function () { var q = $('#mQ'); q.value = ''; q.focus(); });
     $('#mSearchForm').addEventListener('submit', function (e) { e.preventDefault(); $('#mQ').blur(); haptic('tick'); mGo('results'); });
+    $('#mSizeBtn').addEventListener('click', function () { haptic('tick'); openSizes(); });
+    $('#sizeClose').addEventListener('click', closeSizes);
+    $('#sizeBack').addEventListener('click', function (e) { if (e.target === this) closeSizes(); });
     $('#mHeart').addEventListener('click', function () { this.classList.toggle('on'); haptic('select'); });
     $('#mAdd').addEventListener('click', function () {
-      if (!mSize) {
-        haptic('error'); var box = $('#mSizes'); $('#mSizeErr').hidden = false;
-        box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake');
-        box.scrollIntoView({ block: 'center', behavior: 'smooth' });
-        return;
-      }
+      if (!mSize) { haptic('tick'); openSizes(); return; }
       mInCart = true; setCartBadge(); haptic('success'); mGo('cart');
     });
     $('#mAcc').addEventListener('click', function () { this.classList.toggle('open'); $('#mCode').hidden = !this.classList.contains('open'); });
