@@ -1224,7 +1224,7 @@ img { display: block; }
   }
   /* variant D: "BLIK bez kodu" (OneClick) skips the code; the bank asks for confirmation straight away */
   payOC.addEventListener('click', function () { pickPay(payOC); });
-  /* K2: bank-app picker sheet ("multibankowość"); any choice pays, only Bank Demo moves the demo account */
+  /* K2: bank-app picker sheet ("multibankowość") */
   var ocBack = $('#ocBack');
   $('#ocClose').addEventListener('click', function () { ocBack.classList.remove('open'); });
   $('#ocWhy').addEventListener('click', function (e) { e.preventDefault(); });
@@ -1234,11 +1234,13 @@ img { display: block; }
   }); });
   $('#ocPay').addEventListener('click', function () {
     var btn = this, demo = !!$('.oc-radio.sel[data-bank=demo]');
+    /* only Bank Demo has ZeroClick; the other banks would go through OneClick, which is not prototyped */
+    if (!demo) return;
     haptic('tick'); btn.disabled = true;
     setTimeout(function () {
       btn.disabled = false; ocBack.classList.remove('open');
       st.rejected = false;
-      if (demo) markPaid(); else { st.paid = true; setView('shop', 'done'); }
+      markPaid();
       st.sawThanks = true; updateNudge(); haptic('success');
     }, 900);
   });
