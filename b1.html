@@ -1868,8 +1868,8 @@ img { display: block; }
     st.drawerC = open; updateNudge();
   }
   $('#drawerYes').addEventListener('click', function () { haptic('tick'); drawerStep('pin'); });
-  /* closed without adding → the card's second button offers adding again (F: the same screen as D's "Nie teraz") */
-  function offerAgain() { if (VARIANT === 'f') { setView('bank', 'doneNotTrusted'); return; } var b = $('#cardSecondC'); b.textContent = 'Dodaj do zaufanych'; b.dataset.reopen = '1'; }
+  /* closed without adding → the card's second button offers adding again (C and F) */
+  function offerAgain() { var b = $('#cardSecondC'); b.textContent = 'Dodaj do zaufanych'; b.dataset.reopen = '1'; }
   $('#cardSecondC').addEventListener('click', function () { if (this.dataset.reopen) drawer(true); });
   $('#drawerNo').addEventListener('click', function () { haptic('tick'); drawer(false); offerAgain(); });
 
