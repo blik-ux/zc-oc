@@ -345,6 +345,13 @@ img { display: block; }
 .sheet.why-sheet { gap: 24px; }
 .why-body { display: flex; flex-direction: column; gap: 16px; font-size: 14px; line-height: 1.15; }
 .why-body p { margin: 0; }
+.oc-whyp { display: none; flex-direction: column; gap: 24px; }
+.sheet.show-why > :not(.oc-whyp) { display: none; }
+.sheet.show-why > .oc-whyp { display: flex; flex: 1; animation: whyIn .2s ease; }
+.oc-whyp .why-body { flex: 1; line-height: 1.4; }
+@keyframes whyIn { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+.why-head { gap: 10px; }
+.why-back { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; margin: -10px -10px -10px -10px; color: #000; }
 .why-body b { font-weight: 600; }
 .field-row { display: flex; flex-direction: column; gap: 16px; padding: 16px 0 8px; }
 .field-row label { font-weight: 600; font-size: 16px; line-height: 1.15; }
@@ -879,6 +886,15 @@ img { display: block; }
           <a class="oc-why" href="#" id="ocWhy">Dlaczego nie muszę wpisywać kodu?</a>
         </div>
         <button class="btn btn-shop" id="ocPay" type="button">Kupuję i płacę</button>
+        <div class="oc-whyp" id="ocWhyPane">
+          <div class="sheet-head why-head"><button class="why-back" id="whyBackBtn" type="button" aria-label="Wróć"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button><span>Nie musisz wpisywać kodu BLIK</span></div>
+          <div class="why-body">
+            <p>Twoje konto <b>Bank Demo</b> zostało powiązane z naszym sklepem podczas jednej z poprzednich płatności.</p>
+            <p>W każdej chwili możesz wyłączyć to powiązanie w aplikacji banku.</p>
+            <p>Bank dba o Twoje bezpieczeństwo i w razie potrzeby może poprosić Cię o potwierdzenie.</p>
+          </div>
+          <button class="btn btn-shop" id="whyOk2" type="button">Rozumiem</button>
+        </div>
       </div>
     </div>
 
@@ -887,7 +903,7 @@ img { display: block; }
       <div class="sheet why-sheet" role="dialog" aria-label="Nie musisz wpisywać kodu BLIK">
         <div class="sheet-head"><span>Nie musisz wpisywać kodu BLIK</span><button class="sheet-x" id="whyClose" type="button" aria-label="Zamknij">X</button></div>
         <div class="why-body">
-          <p>Nie musisz już wpisywać kodu BLIK. Twoje konto <b>Bank Demo</b> zostało powiązane z tym Sklepem podczas jednej z poprzednich płatności.</p>
+          <p>Twoje konto <b>Bank Demo</b> zostało powiązane z naszym sklepem podczas jednej z poprzednich płatności.</p>
           <p>W każdej chwili możesz wyłączyć to powiązanie w aplikacji banku.</p>
           <p>Bank dba o Twoje bezpieczeństwo i w razie potrzeby może poprosić Cię o potwierdzenie.</p>
         </div>
@@ -1655,9 +1671,17 @@ img { display: block; }
   /* K2: bank-app picker sheet ("multibankowość") */
   var ocBack = $('#ocBack');
   $('#ocClose').addEventListener('click', function () { ocBack.classList.remove('open'); });
+  ocBack.addEventListener('transitionend', function () { if (!ocBack.classList.contains('open')) { var s = $('#ocBack .sheet'); s.classList.remove('show-why'); s.style.minHeight = ''; } });
   var whyBack = $('#whyBack');
   function closeWhy() { whyBack.classList.remove('open'); }
-  $('#ocWhy').addEventListener('click', function (e) { e.preventDefault(); haptic('tick'); whyBack.classList.add('open'); });
+  /* K2 "why" explanation: inside the same sheet with a back arrow (default) or as a separate modal (#why-modal / ZC_WHY = "modal") */
+  var WHY_INLINE = !(window.ZC_WHY === 'modal' || /why-modal/.test(location.hash));
+  var ocSheet = $('#ocBack .sheet');
+  /* keep the sheet's height while swapping its content, so it reads as the same sheet */
+  function whyInline(on) { ocSheet.style.minHeight = on ? ocSheet.offsetHeight + 'px' : ''; ocSheet.classList.toggle('show-why', on); }
+  $('#ocWhy').addEventListener('click', function (e) { e.preventDefault(); haptic('tick'); if (WHY_INLINE) whyInline(true); else whyBack.classList.add('open'); });
+  $('#whyBackBtn').addEventListener('click', function () { haptic('tick'); whyInline(false); });
+  $('#whyOk2').addEventListener('click', function () { haptic('tick'); whyInline(false); });
   $('#whyClose').addEventListener('click', closeWhy);
   $('#whyOk').addEventListener('click', function () { haptic('tick'); closeWhy(); });
   whyBack.addEventListener('click', function (e) { if (e.target === this) closeWhy(); });
