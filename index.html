@@ -1027,7 +1027,10 @@ img { display: block; }
               <li>W razie potrzeby<br>bank poprosi Cię o&nbsp;potwierdzenie</li>
             </ul>
           </div>
-          <div class="card-plain note" data-variant="a d k1 k2">
+          <div class="card-bank note" data-variant="a">
+            <p><b>Płać wygodniej w Sklep.pl</b><br>W kolejnym kroku dodaj sklep do zaufanych.</p>
+          </div>
+          <div class="card-plain note" data-variant="d k1 k2">
             <p><b>Płać wygodniej w Sklep.pl</b><br>W kolejnym kroku dodaj sklep do zaufanych.</p>
           </div>
           <div class="card-plain pin-card">
@@ -1036,8 +1039,8 @@ img { display: block; }
           </div>
           <p class="sca-timer" id="scaTimer" role="timer" aria-live="polite" data-variant="a b1 e f" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 5.8V9l2 1.4M6.3 1.8h3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>Na potwierdzenie zostało <b id="scaLeft">10</b>&nbsp;s</span></p>
           <div class="stack-8">
-            <button class="btn btn-bank" id="payTrust" type="button"><span class="lbl"><span data-variant="a d k1 k2">Potwierdź płatność i kontynuuj</span><span data-variant="b c f" hidden>Potwierdź płatność</span><span data-variant="b1 e" hidden>Dodaj do zaufanych i potwierdź płatność</span></span><i class="spin"></i></button>
-            <button class="btn btn-bank" id="payOnly" type="button" data-variant="a d b1 k1 k2 e"><span class="lbl">Potwierdź tylko płatność</span><i class="spin"></i></button>
+            <button class="btn btn-bank" id="payTrust" type="button"><span class="lbl"><span data-variant="a">Potwierdź i dodaj do zaufanych</span><span data-variant="d k1 k2" hidden>Potwierdź płatność i kontynuuj</span><span data-variant="b c f" hidden>Potwierdź płatność</span><span data-variant="b1 e" hidden>Dodaj do zaufanych i potwierdź płatność</span></span><i class="spin"></i></button>
+            <button class="btn btn-bank" id="payOnly" type="button" data-variant="a d b1 k1 k2 e"><span class="lbl"><span data-variant="a">Potwierdź płatność</span><span data-variant="d b1 k1 k2 e" hidden>Potwierdź tylko płatność</span></span><i class="spin"></i></button>
             <button class="btn btn-bank-3" id="rejectPay" type="button">Odrzuć</button>
           </div>
         </div>
@@ -1146,12 +1149,18 @@ img { display: block; }
         <span class="grab" aria-hidden="true"></span>
         <div class="dstep" data-step="offer">
           <p class="t16b">Dodaj Sklep.pl do zaufanych</p>
-          <div class="terms">
+          <div class="terms" data-variant="c">
             <ul>
               <li>Płać wygodniej: w zaufanym sklepie zapłacisz jednym kliknięciem, bez przechodzenia do aplikacji bankowej</li>
               <li>Bank dba o bezpieczeństwo i w razie potrzeby poprosi Cię o potwierdzenie</li>
             </ul>
             <p class="muted">Sklep możesz w każdej chwili usunąć z&nbsp;zaufanych w ustawieniach BLIK.</p>
+          </div>
+          <div class="terms" data-variant="f" hidden>
+            <ul>
+              <li><b>Płać jednym kliknięciem,</b><br>bez przechodzenia do aplikacji bankowej</li>
+              <li>W razie potrzeby<br>bank poprosi Cię o&nbsp;potwierdzenie</li>
+            </ul>
           </div>
           <div class="stack-8">
             <button class="btn btn-bank" id="drawerYes" type="button">Dodaj do zaufanych</button>
@@ -1845,7 +1854,7 @@ img { display: block; }
     if (needPin('pin1')) return;
     stopSca();
     haptic('tick');
-    busy(this, 900, function () { markPaid(); haptic('success'); if (VARIANT === 'c' || VARIANT === 'f') { st.drawerC = true; setView('bank', 'paidC'); setTimeout(function () { if (st.bank === 'paidC') drawer(true); }, 1600); } else setView('bank', VARIANT === 'b' ? 'offerB' : VARIANT === 'b1' || VARIANT === 'e' ? 'doneTrusted' : 'trust'); });
+    busy(this, 900, function () { markPaid(); haptic('success'); if (VARIANT === 'c' || VARIANT === 'f') { st.drawerC = true; setView('bank', 'paidC'); setTimeout(function () { if (st.bank === 'paidC') drawer(true); }, VARIANT === 'f' ? 800 : 1600); } else setView('bank', VARIANT === 'b' ? 'offerB' : VARIANT === 'b1' || VARIANT === 'e' ? 'doneTrusted' : 'trust'); });
   });
   $('#payOnly').addEventListener('click', function () {
     if (needPin('pin1')) return;
